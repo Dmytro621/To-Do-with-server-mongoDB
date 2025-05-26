@@ -4,50 +4,42 @@ const cors = require('cors')
 
 const app = express()
 
-let todos = [
-    { user: 'Dima', id: 1 },
-    { user: 'Pasha', id: 2 },
-    { user: 'Anton', id: 3 },
-]
+let todos = []
 
 app.use(express.json())
 app.use(cors())
 
-app.get('/', (req, res) => {
+app.get('/todo/', (req, res) => {
+    console.log('ToDo added!')
     res.send(todos)
 })
 
-app.get('/:id', (req, res) => {
+app.get('/todo/:id', (req, res) => {
     const id = +req.params.id
     const todo = todos.find(item => item.id === id)
 
     res.send(todo)
 })
 
-app.get('/lala', (req, res) => {
-    console.log('ALLALALAAL')
-    res.send('ДАРОВА')
-})
-
-app.put('/:id', (req, res) => {
+app.put('/todo/:id', (req, res) => {
     const id = +req.params.id
     todos = todos.map(item => item.id === id ? {...item, ...req.body} : item)
 
-    res.send('OOOOKKEEEEEEYYY')
+    res.send('To Do is edited')
 })
 
-app.delete('/:id', (req, res) => {
+app.post('/todo/', (req, res) => {
+    const newTodo = { ...req.body, id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) }
+
+    todos.push(newTodo)
+    res.send(newTodo)
+})
+
+app.delete('/todo/:id', (req, res) => {
     const id = +req.params.id
     todos = todos.filter(item => item.id !== id)
 
-    res.send('OOOOKKEEEEEEYYY')
-})
-
-app.post('/', (req, res) => {
-    const newTodo = { ...req.body, id: Math.floor(Math.random() * 100) }
-
-    todos.push(newTodo)
-    res.send(todos)
+    res.send('To Do is deleted')
 })
 
 app.listen(3000, () => {
